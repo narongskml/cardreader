@@ -10,3 +10,6 @@ https://github.com/privageapp/thai-national-id-reader
 
 
 https://pypi.org/project/thai-personal-card-extract/
+
+
+https://github.com/cardid/webcard
