@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 /*********************
 *  Credit from https://github.com/somprasongd/thai-smartcard-nodejs
-*  Convert to C# using chatGPT4
+*  Convert to C# 
 **********************/
 namespace PersonalApplet
 {
