@@ -9,6 +9,7 @@ namespace ThaiIDCardTest
     {
 
         ThaiIDCardReader idcard;
+        bool _ismonitor = false;
         public Form1()
         {
             InitializeComponent();
@@ -28,7 +29,7 @@ namespace ThaiIDCardTest
         private void Form1_Load(object sender, EventArgs e)
         {
             idcard = new ThaiIDCardReader();
-
+    
             idcard.eventCardRemoved += Idcard_eventCardRemoved;
             idcard.eventCardInsertedWithPhoto += Idcard_eventCardInsertedWithPhoto;
 
@@ -38,12 +39,17 @@ namespace ThaiIDCardTest
             if (cmbReader.Items.Count > 0)
             {
                 if (cmbReader.Items[0].ToString() != "")
-                    idcard.MonitorStart(cmbReader.Items[0].ToString());
-                idcard.eventCardInsertedWithPhoto += new handleCardInserted(Idcard_eventCardInserted);
-                idcard.eventPhotoProgress += new handlePhotoProgress(photoProgress);
+                    StartMonitor(cmbReader.Items[0].ToString());
             }
         }
+        private void StartMonitor(string readerName)
+        {
+            idcard.MonitorStart(readerName);
+            _ismonitor = true;
+            idcard.eventCardInsertedWithPhoto += new handleCardInserted(Idcard_eventCardInserted);
+            idcard.eventPhotoProgress += new handlePhotoProgress(photoProgress);
 
+        }
         private void photoProgress(int value, int maximum)
         {
 
@@ -110,13 +116,26 @@ namespace ThaiIDCardTest
         private void btRefreshReader_Click(object sender, EventArgs e)
         {
             cmbReader.Items.Clear();
-            var readerlist = idcard.GetReaders();
-            foreach (var reader in readerlist)
+            try
             {
-                cmbReader.Items.Add(reader);
-            }
-            cmbReader.SelectedIndex = 0;
+                var readerlist = idcard.GetReaders();
+                foreach (var reader in readerlist)
+                {
+                    cmbReader.Items.Add(reader);
+                }
+                cmbReader.SelectedIndex = 0;
 
+                if (!_ismonitor)
+                {
+                    StartMonitor(cmbReader.Items[cmbReader.SelectedIndex].ToString());
+                }
+            }
+            catch(Exception ex)
+            {
+                cmbReader.Refresh();
+                MessageBox.Show(ex.Message);
+                
+            }
 
 
         }
